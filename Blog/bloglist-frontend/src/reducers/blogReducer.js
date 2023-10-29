@@ -1,6 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
 import blogService from '../services/blogs'
-import blogs from "../services/blogs";
 
 const initialState = []
 const blogSlice = createSlice({
@@ -17,6 +16,7 @@ const blogSlice = createSlice({
                 ...blogToLike,
                 likes: blogToLike.likes + 1
             }
+            console.log(changedBlog)
             return state.map(blog => 
                 blog.id !== id ? blog : changedBlog
             )

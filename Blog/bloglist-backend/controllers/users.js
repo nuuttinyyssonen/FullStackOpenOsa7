@@ -1,6 +1,7 @@
 const bcrypt = require("bcrypt");
 const usersRouter = require("express").Router();
 const User = require("../models/user");
+const { request, response } = require("express");
 
 usersRouter.post("/", async (request, response) => {
   const { username, name, password, blog } = request.body;
@@ -38,5 +39,14 @@ usersRouter.get("/", async (request, response) => {
     response.status(500).json({ error: "Internal Server Error" });
   }
 });
+
+usersRouter.get('/:id', async (request, response) => {
+  try {
+    const user = await User.findById(request.params.id).populate("blog")
+    response.json(user)
+  } catch(error) {
+    response.status(500).json({ error: "Internal Server Error" })
+  }
+})
 
 module.exports = usersRouter;

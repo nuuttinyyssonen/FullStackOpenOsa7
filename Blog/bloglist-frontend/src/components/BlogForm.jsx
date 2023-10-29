@@ -61,8 +61,4 @@ const BlogForm = ({
   );
 };
 
-BlogForm.propTypes = {
-  user: PropTypes.object.isRequired,
-};
-
 export default BlogForm;

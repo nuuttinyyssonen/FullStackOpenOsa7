@@ -5,18 +5,23 @@ import LoginForm from "./components/LoginForm";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import Notification from "./components/Notification";
+import Users from "./components/Users";
+import User from "./components/User";
+import Logout from "./components/Logout";
 import { useDispatch, useSelector } from "react-redux";
 import { notificationSetter } from "./reducers/notificationReducer";
 import { initializeBlogs, likeBlog, createBlog } from "./reducers/blogReducer";
-
+import { loginUser, logoutUser } from "./reducers/userReducer";
+import { Routes, Route, Link, useNavigate } from "react-router-dom";
+import './css/app.css'
+import Navbar from "./components/Navbar";
 
 const App = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate()
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
-
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [url, setUrl] = useState("");
@@ -34,34 +39,21 @@ const App = () => {
     dispatch(initializeBlogs())
   }, []);
 
-  const handleLogout = () => {
-    window.localStorage.removeItem("loggedBlogAppUser");
-    setUser(null);
-  };
 
   const handleLogin = async (event) => {
     event.preventDefault();
     try {
-      const user = await blogService.login({
+      const user = {
         username,
-        password,
-      });
-      window.localStorage.setItem("loggedBlogAppUser", JSON.stringify(user));
-      blogService.setToken(user.token);
-      setUser(user);
+        password
+      }
+      dispatch(loginUser(user))
       setUsername("");
       setPassword("");
+      navigate("/home")
     } catch (error) {
       console.error(error);
       dispatch(notificationSetter())
-    }
-  };
-
-  const handleLike = async (author, likes, title, url, id) => {
-    try {
-      dispatch(likeBlog(id, author, title, likes, url))
-    } catch (error) {
-      console.error(error);
     }
   };
 
@@ -72,14 +64,9 @@ const App = () => {
 
   const blogsMap = () => {
     return blogs.map((blog) => (
-      <Blog
-        key={blog.id}
-        blog={blog}
-        user={user}
-        handleLike={() =>
-          handleLike(blog.author, blog.likes, blog.title, blog.url, blog.id)
-        }
-      />
+      <div>
+        <Link to={`/blog/${blog.id}`}>{blog.title}</Link>
+      </div>
     ));
   };
 
@@ -104,49 +91,41 @@ const App = () => {
   };
 
   return (
-    <div>
-    <Notification />
-      <LoginForm
-        username={username}
-        password={password}
-        setPassword={setPassword}
-        setUsername={setUsername}
-        handleSubmit={handleLogin}
-        user={user}
-      />
-
-      {user && (
-        <div>
-          <p>{user.name} logged in</p>
-          <button id="logout-btn" onClick={handleLogout}>
-            Logout
-          </button>
-        </div>
-      )}
-
-      {user && (
-        <Togglable buttonLabel="create new blog">
-          <BlogForm
-            user={user}
-            handleNewPost={handleNewPost}
-            title={title}
-            author={author}
-            url={url}
-            handleAuthorChange={(event) => setAuthor(event.target.value)}
-            handleTitleChange={(event) => setTitle(event.target.value)}
-            handleUrlChange={(event) => setUrl(event.target.value)}
-          />
-        </Togglable>
-      )}
-
-      <div>
-        {user && (
+    <div className="main-container">
+      <Routes>
+        <Route path='/' element={
+          <LoginForm
+          username={username}
+          password={password}
+          setPassword={setPassword}
+          setUsername={setUsername}
+          handleSubmit={handleLogin}
+          />}>
+        </Route>
+        <Route path="/users" element={<Users />} />  
+        <Route path="/users/:id" element={<User />} />
+        <Route path="/home" element={<>
+          <Navbar />
+          <Logout />
+          <Notification />
+            <Togglable buttonLabel="create new blog">
+            <BlogForm
+              handleNewPost={handleNewPost}
+              title={title}
+              author={author}
+              url={url}
+              handleAuthorChange={(event) => setAuthor(event.target.value)}
+              handleTitleChange={(event) => setTitle(event.target.value)}
+              handleUrlChange={(event) => setUrl(event.target.value)}
+            />
+          </Togglable>
           <div>
-            <h2>Blogs</h2>
-            {blogsMap()}
+              <h2>Blogs</h2>
+              {blogsMap()}
           </div>
-        )}
-      </div>
+        </>} />
+        <Route path="/blog/:id" element={<Blog />} />
+      </Routes>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import axios from "axios";
 const baseUrlLogin = "http://localhost:3003/api/login";
 const baseUrlBlog = "http://localhost:3003/api/blogs";
+const baseUrlUsers = "http://localhost:3003/api/users";
 
 let token = null;
 
@@ -16,6 +17,16 @@ const login = async (credentials) => {
   });
   return response.data;
 };
+
+const getUsers = async () => {
+  const response = await axios.get(baseUrlUsers)
+  return response.data
+}
+
+const getUser = async (id) => {
+  const response = await axios.get(`${baseUrlUsers}/${id}`)
+  return response.data
+}
 
 const create = async (newBlog) => {
   const config = {
@@ -46,4 +57,9 @@ const getAll = async () => {
   return response.data;
 };
 
-export default { getAll, login, setToken, create, update, deleteRecord };
+const getBlog = async (id) => {
+  const response = await axios.get(`${baseUrlBlog}/${id}`)
+  return response.data
+}
+
+export default { getAll, login, setToken, create, update, deleteRecord, getUsers, getUser, getBlog };

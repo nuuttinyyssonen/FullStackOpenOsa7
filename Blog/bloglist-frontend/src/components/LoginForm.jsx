@@ -1,5 +1,5 @@
 import React from "react";
-import PropTypes from "prop-types";
+import '../css/login.css'
 
 const LoginForm = ({
   username,
@@ -12,7 +12,7 @@ const LoginForm = ({
   const loginForm = () => (
     <form onSubmit={handleSubmit}>
       <h1>login to application</h1>
-      <div>
+      <div className="username">
         username
         <input
           type="text"
@@ -22,7 +22,7 @@ const LoginForm = ({
           onChange={({ target }) => setUsername(target.value)}
         />
       </div>
-      <div>
+      <div className="password">
         password
         <input
           type="password"
@@ -32,19 +32,16 @@ const LoginForm = ({
           onChange={({ target }) => setPassword(target.value)}
         />
       </div>
-      <button id="login-btn" type="submit">
-        Login
-      </button>
+      <div className="btn-cont">
+        <button id="login-btn" type="submit">
+          Login
+        </button>
+      </div>
+      
     </form>
   );
 
-  return <div>{!user && loginForm()}</div>;
-};
-
-LoginForm.propTypes = {
-  handleSubmit: PropTypes.func.isRequired,
-  username: PropTypes.string.isRequired,
-  password: PropTypes.string.isRequired,
+  return <div className="container">{!user && loginForm()}</div>;
 };
 
 export default LoginForm;

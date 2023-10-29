@@ -1,0 +1,28 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 10%;
+}
+
+.username {
+    display: flex;
+    gap: 2vh
+}
+
+.password {
+    display: flex;
+    gap: 2vh;
+    padding-top: 1vh;
+}
+
+#login-btn {
+    margin: 0 auto;
+    width: 40%;
+    padding: 1vh;
+}
+
+.btn-cont {
+    display: flex;
+    padding-top: 2vh;
+}
